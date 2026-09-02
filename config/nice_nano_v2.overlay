@@ -1,4 +1,6 @@
+#include <dt-bindings/zmk/matrix_transform.h>
 #include <dt-bindings/zmk/physical_layout.h>
+#include <dt-bindings/pinctrl/nrf-pinctrl.h>
 
 / {
     chosen {
@@ -8,25 +10,23 @@
         zmk,physical-layout = &physical_layout0;
     };
 
-    /* 1. KHAI BÁO MA TRẬN PHÍM (MATRIX) */
     kscan0: kscan_0 {
         compatible = "zmk,kscan-gpio-matrix";
         label = "KSCAN";
         diode-direction = "col2row"; 
         
         row-gpios
-            = <&gpio0 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Hàng trên
-            , <&gpio0 24 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Hàng dưới
+            = <&gpio0 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> 
+            , <&gpio0 24 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> 
             ;
         col-gpios
-            = <&gpio0 22 GPIO_ACTIVE_HIGH> // Cột 1
-            , <&gpio1 0  GPIO_ACTIVE_HIGH> // Cột 2
-            , <&gpio1 4  GPIO_ACTIVE_HIGH> // Cột 3
-            , <&gpio0 11 GPIO_ACTIVE_HIGH> // Cột 4
+            = <&gpio0 22 GPIO_ACTIVE_HIGH> 
+            , <&gpio1 0  GPIO_ACTIVE_HIGH> 
+            , <&gpio1 4  GPIO_ACTIVE_HIGH> 
+            , <&gpio0 11 GPIO_ACTIVE_HIGH> 
             ;
     };
 
-    /* 2. MA TRẬN ẢO */
     default_transform: keymap_transform_0 {
         compatible = "zmk,matrix-transform";
         columns = <4>;
@@ -37,7 +37,6 @@
         >;
     };
 
-    /* 3. TỌA ĐỘ VẬT LÝ CHO ZMK STUDIO */
     key0: key0 { compatible = "zmk,key-physical-attrs"; x = <0>;   y = <0>;   width = <100>; height = <100>; };
     key1: key1 { compatible = "zmk,key-physical-attrs"; x = <100>; y = <0>;   width = <100>; height = <100>; };
     key2: key2 { compatible = "zmk,key-physical-attrs"; x = <200>; y = <0>;   width = <100>; height = <100>; };
@@ -56,7 +55,6 @@
         keys = <&key0 &key1 &key2 &key3 &key4 &key5 &key6 &key7>;
     };
 
-    /* 4. KHAI BÁO NÚM XOAY EC11 */
     encoder: encoder {
         compatible = "alps,ec11";
         label = "ENCODER";
@@ -73,15 +71,15 @@
     };
 };
 
-/* 5. KHAI BÁO MÀN HÌNH OLED I2C */
 &pinctrl {
-    i2c0_default: i2c0_default {
+    /* Đổi tên node thành my_i2c_default để tránh đụng hàng với mạch gốc */
+    my_i2c_default: my_i2c_default {
         group1 {
-            psels = <NRF_PSEL(TWIM_SDA, 1, 13)>, // Chân SDA 113
-                    <NRF_PSEL(TWIM_SCL, 1, 11)>; // Chân SCL 111
+            psels = <NRF_PSEL(TWIM_SDA, 1, 13)>, 
+                    <NRF_PSEL(TWIM_SCL, 1, 11)>; 
         };
     };
-    i2c0_sleep: i2c0_sleep {
+    my_i2c_sleep: my_i2c_sleep {
         group1 {
             psels = <NRF_PSEL(TWIM_SDA, 1, 13)>,
                     <NRF_PSEL(TWIM_SCL, 1, 11)>;
@@ -93,8 +91,8 @@
 &i2c0 {
     status = "okay";
     compatible = "nordic,nrf-twi";
-    pinctrl-0 = <&i2c0_default>;
-    pinctrl-1 = <&i2c0_sleep>;
+    pinctrl-0 = <&my_i2c_default>;
+    pinctrl-1 = <&my_i2c_sleep>;
     pinctrl-names = "default", "sleep";
 
     oled: ssd1306@3c {
