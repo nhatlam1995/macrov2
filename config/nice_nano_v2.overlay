@@ -1,12 +1,12 @@
 #include <dt-bindings/zmk/matrix_transform.h>
-#include <dt-bindings/pinctrl/nrf-pinctrl.h>
+#include <physical_layouts.dtsi>
 
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix-transform = &default_transform;
-        zephyr,display = &oled;
         zmk,physical-layout = &physical_layout0;
+        zephyr,display = &oled;
+        /* Lưu ý: Đã xóa zmk,matrix-transform ở đây theo đúng chuẩn ZMK Studio */
     };
 
     kscan0: kscan_0 {
@@ -36,22 +36,21 @@
         >;
     };
 
-    key0: key0 { compatible = "zmk,key-physical-attrs"; x = <0>;   y = <0>;   width = <100>; height = <100>; };
-    key1: key1 { compatible = "zmk,key-physical-attrs"; x = <100>; y = <0>;   width = <100>; height = <100>; };
-    key2: key2 { compatible = "zmk,key-physical-attrs"; x = <200>; y = <0>;   width = <100>; height = <100>; };
-    key3: key3 { compatible = "zmk,key-physical-attrs"; x = <300>; y = <0>;   width = <100>; height = <100>; };
-    
-    key4: key4 { compatible = "zmk,key-physical-attrs"; x = <0>;   y = <100>; width = <100>; height = <100>; };
-    key5: key5 { compatible = "zmk,key-physical-attrs"; x = <100>; y = <100>; width = <100>; height = <100>; };
-    key6: key6 { compatible = "zmk,key-physical-attrs"; x = <200>; y = <100>; width = <100>; height = <100>; };
-    key7: key7 { compatible = "zmk,key-physical-attrs"; x = <300>; y = <100>; width = <100>; height = <100>; };
-
+    /* KHAI BÁO TỌA ĐỘ PHÍM CHO ZMK STUDIO BẰNG MACRO CHÍNH CHỦ */
     physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
         display-name = "Macropad V2";
         kscan = <&kscan0>;
-        matrix-transform = <&default_transform>;
-        keys = <&key0 &key1 &key2 &key3 &key4 &key5 &key6 &key7>;
+        transform = <&default_transform>;
+        keys  // Width Height X Y Rotation Rot_X Rot_Y
+            = <&key_physical_attrs 100 100 0 0 0 0 0>    // Hàng trên - Cột 1
+            , <&key_physical_attrs 100 100 100 0 0 0 0>  // Hàng trên - Cột 2
+            , <&key_physical_attrs 100 100 200 0 0 0 0>  // Hàng trên - Cột 3
+            , <&key_physical_attrs 100 100 300 0 0 0 0>  // Hàng trên - Cột 4
+            , <&key_physical_attrs 100 100 0 100 0 0 0>  // Hàng dưới - Cột 1
+            , <&key_physical_attrs 100 100 100 100 0 0 0>// Hàng dưới - Cột 2
+            , <&key_physical_attrs 100 100 200 100 0 0 0>// Hàng dưới - Cột 3
+            , <&key_physical_attrs 100 100 300 100 0 0 0>;// Hàng dưới - EC11
     };
 
     encoder: encoder {
@@ -71,7 +70,6 @@
 };
 
 &pinctrl {
-    /* Đổi tên node thành my_i2c_default để tránh đụng hàng với mạch gốc */
     my_i2c_default: my_i2c_default {
         group1 {
             psels = <NRF_PSEL(TWIM_SDA, 1, 13)>, 
